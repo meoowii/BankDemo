@@ -9,7 +9,7 @@ namespace FakeBank.Endpoints
             app.MapGet("/transactions/{id:guid}/confirmation",
                 (Guid id, ConfirmationService service) =>
                 {
-                    var pdf = service.GenerateAndRegister(id);
+                    var pdf = service.GeneratePdf(id);
 
                     if (pdf is null)
                     {
@@ -19,7 +19,26 @@ namespace FakeBank.Endpoints
                     var fileName = $"confirmation-{id}.pdf";
                     return Results.File(pdf, "application/pdf", fileName);
                 });
+
+            app.MapGet("/transactions/{id:guid}/confirmation/hash",
+                (Guid id, ConfirmationService service, IHashService hashService) =>
+                {
+                    var pdfBytes = service.GeneratePdf(id);
+                    if (pdfBytes is null)
+                    {
+                        return Results.NotFound();
+                    }
+
+                    var hash = hashService.ComputeSha256(pdfBytes);
+
+                    return Results.Text(hash, "text/plain");
+                }
+                );
+
+
         }
+
+
 
     }
 }

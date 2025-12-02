@@ -15,6 +15,7 @@ builder.Services.AddScoped<IConfirmationRepository, ConfirmationRepository>();
 builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<ConfirmationService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -39,5 +40,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapTransactionEndpoints();
 app.MapConfirmationEndpoints();
+app.MapHashEndpoints();
 
 app.Run();

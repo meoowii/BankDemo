@@ -7,20 +7,23 @@ public class ConfirmationService
     private readonly ITransactionRepository _transactionRepository;
     private readonly IConfirmationRepository _confirmationRepository;
     private readonly IPdfGenerator _pdfGenerator;
+    private readonly IHashService _hashService;
 
 
     public ConfirmationService(
         ITransactionRepository transactionRepository,
         IConfirmationRepository confirmationRepository,
-        IPdfGenerator pdfGenerator)
+        IPdfGenerator pdfGenerator,
+        IHashService hashService)
     {
         _transactionRepository = transactionRepository;
         _confirmationRepository = confirmationRepository;
         _pdfGenerator = pdfGenerator;
+        _hashService = hashService;
     }
 
 
-    public byte[]? GenerateAndRegister(Guid transactionId)
+    public byte[]? GeneratePdf(Guid transactionId)
     {
         var transaction = _transactionRepository
             .GetAll()
