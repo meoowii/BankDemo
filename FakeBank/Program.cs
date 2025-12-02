@@ -16,6 +16,10 @@ builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<ConfirmationService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
 builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddHttpClient<INoFakeryClient, NoFakeryClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["NoFakery:BaseUrl"]!);
+});
 
 
 builder.Services.AddEndpointsApiExplorer();

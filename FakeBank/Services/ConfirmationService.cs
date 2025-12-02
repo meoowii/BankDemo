@@ -1,4 +1,7 @@
-﻿using FakeBank.Repositories;
+﻿using System;
+using System.Linq;
+using FakeBank.Models;
+using FakeBank.Repositories;
 
 namespace FakeBank.Services;
 
@@ -8,22 +11,23 @@ public class ConfirmationService
     private readonly IConfirmationRepository _confirmationRepository;
     private readonly IPdfGenerator _pdfGenerator;
     private readonly IHashService _hashService;
-
+    private readonly INoFakeryClient _noFakeryClient;
 
     public ConfirmationService(
         ITransactionRepository transactionRepository,
         IConfirmationRepository confirmationRepository,
         IPdfGenerator pdfGenerator,
-        IHashService hashService)
+        IHashService hashService,
+        INoFakeryClient noFakeryClient)
     {
         _transactionRepository = transactionRepository;
         _confirmationRepository = confirmationRepository;
         _pdfGenerator = pdfGenerator;
         _hashService = hashService;
+        _noFakeryClient = noFakeryClient;
     }
 
-
-    public byte[]? GeneratePdf(Guid transactionId)
+    public async Task<(byte[] PdfBytes, string Hash)?> GeneratePdfAsync(Guid transactionId)
     {
         var transaction = _transactionRepository
             .GetAll()
@@ -41,8 +45,29 @@ public class ConfirmationService
             return null;
         }
 
-        var confirmationPdf = _pdfGenerator.GenerateTransactionConfirmation(transaction, confirmation);
+        var pdfBytes = _pdfGenerator.GenerateTransactionConfirmation(transaction, confirmation);
 
-        return confirmationPdf;
+        var hash = _hashService.ComputeSha256(pdfBytes);
+
+        try
+        {
+            await _noFakeryClient.RegisterDocumentAsync(new RegisterDocumentRequest
+            {
+                Hash = hash,
+                DocumentType = "TRANSFER_CONFIRMATION",
+                ExternalId = confirmation.ConfirmationNumber,
+                CreatedAt = confirmation.CreatedAt,
+                Amount = confirmation.Amount,
+                Currency = confirmation.Currency.ToString(),
+                FromAccount = confirmation.Sender,
+                ToAccount = confirmation.Receiver
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"NoFakery error: {ex.Message}");
+        }
+
+        return (pdfBytes, hash);
     }
 }
