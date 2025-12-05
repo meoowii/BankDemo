@@ -14,9 +14,9 @@ namespace FakeBank.Services
             var page = document.AddPage();
             using var gfx = XGraphics.FromPdfPage(page);
 
-            var titleFont = new XFont("Verdana", 18, XFontStyle.Bold);
-            var labelFont = new XFont("Verdana", 10, XFontStyle.Regular);
-            var valueFont = new XFont("Verdana", 10, XFontStyle.Bold);
+            var titleFont = new XFont("Liberation Mono", 18, XFontStyle.Bold);
+            var labelFont = new XFont("Liberation Mono", 10, XFontStyle.Regular);
+            var valueFont = new XFont("Liberation Mono", 10, XFontStyle.Bold);
 
             double y = 40;
 

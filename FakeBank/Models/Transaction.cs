@@ -15,5 +15,7 @@
 
         public string Title { get; set; } = string.Empty;
         public TransactionStatus Status { get; set; }
+
+        public Confirmation? Confirmation { get; set; }
     }
 }

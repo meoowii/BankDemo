@@ -5,7 +5,9 @@
         public int Id { get; set; }
         public Guid Guid { get; set; }
 
-        public Guid TransactionGuid { get; set; }
+        // 🔹 Klucz obcy i nawigacja do Transaction
+        public int TransactionId { get; set; }
+        public Transaction Transaction { get; set; } = null!;
 
         public string ConfirmationNumber { get; set; } = string.Empty;
         public TransactionStatus Status { get; set; }

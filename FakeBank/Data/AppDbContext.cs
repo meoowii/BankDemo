@@ -13,4 +13,14 @@ public class AppDbContext : DbContext
 
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<Confirmation> Confirmations => Set<Confirmation>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Transaction>()
+            .HasOne(t => t.Confirmation)      
+            .WithOne(c => c.Transaction)      
+            .HasForeignKey<Confirmation>(c => c.TransactionId)
+            .IsRequired()                     
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }
