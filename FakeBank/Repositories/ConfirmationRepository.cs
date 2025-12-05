@@ -15,6 +15,6 @@ public class ConfirmationRepository : IConfirmationRepository
     public Confirmation? GetByTransactionId(Guid transactionId)
     {
         return _db.Confirmations
-            .SingleOrDefault(c => c.TransactionGuid == transactionId);
+            .SingleOrDefault(c => c.Transaction.Guid == transactionId);
     }
 }
