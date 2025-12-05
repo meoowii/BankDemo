@@ -40,7 +40,7 @@ public static class DbSeeder
         var c1 = new Confirmation
         {
             Guid = Guid.NewGuid(),
-            TransactionGuid = t1.Guid,
+            TransactionId = 1,
             ConfirmationNumber = "CONF-" + t1.Guid.ToString("N")[..8],
             Amount = t1.Amount,
             Currency = ConfirmationCurrency.PLN,
@@ -52,7 +52,7 @@ public static class DbSeeder
         var c2 = new Confirmation
         {
             Guid = Guid.NewGuid(),
-            TransactionGuid = t2.Guid,
+            TransactionId = 2,
             ConfirmationNumber = "CONF-" + t2.Guid.ToString("N")[..8],
             Amount = t2.Amount,
             Currency = ConfirmationCurrency.EUR,

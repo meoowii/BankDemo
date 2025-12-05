@@ -1,0 +1,35 @@
+﻿version: '3.9'
+
+services:
+  db:
+    build:
+      context: Database/
+      dockerfile: Dockerfile   # <-- Twój Dockerfile od Postgresa
+    container_name: fakebank-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fakebank
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile       # <-- Twój Dockerfile od FakeBank
+    container_name: fakebank-api
+    restart: on-failure
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=fakebank;Username=postgres;Password=postgres"
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+volumes:
+  pgdata:
