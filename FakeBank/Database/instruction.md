@@ -2,7 +2,7 @@
 
 docker build -t db_fake_bank .
 
-docker run -d --name db_fake_bank -p 5432:5432 -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=super_secure_password -e POSTGRES_DB=fake_bank db_fake_bank
+docker run -d --name db_fake_bank -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=fake_bank db_fake_bank
 
 2. PARAMETERS TO CONNECT:
 
