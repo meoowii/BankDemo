@@ -7,19 +7,23 @@ namespace FakeBank.Endpoints
         public static void MapConfirmationEndpoints(this WebApplication app)
         {
             app.MapGet("/transactions/{id:guid}/confirmation",
-                (Guid id, ConfirmationService service) =>
+                async (Guid id, ConfirmationService service, HttpResponse httpResponse) =>
                 {
-                    var pdf = service.GenerateAndRegister(id);
+                    var result = await service.GeneratePdfAsync(id);
 
-                    if (pdf is null)
+                    if (result is null)
                     {
                         return Results.NotFound();
                     }
 
-                    var fileName = $"confirmation-{id}.pdf";
-                    return Results.File(pdf, "application/pdf", fileName);
-                });
-        }
+                    var (pdfBytes, hash) = result.Value;
 
+                    httpResponse.Headers.Append("X-Document-Hash", hash);
+
+                    var fileName = $"confirmation-{id}.pdf";
+                    return Results.File(pdfBytes, "application/pdf", fileName);
+                });
+
+        }
     }
 }
